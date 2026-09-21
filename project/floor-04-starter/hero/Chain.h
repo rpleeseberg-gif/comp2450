@@ -70,7 +70,7 @@ public:
         explicit Node(const T& v, Node* n = nullptr) : data(v), next(n) {
             ++detail::NodeStats::allocations;
         }
-        ~Node() { ++detail::NodeStats::deallocations; }
+        ~Node() { ++detail::NodeStats::deallocations; } // ~ is a destructor symbol
     };
 
     // -----------------------------------------------------------------
@@ -96,7 +96,7 @@ public:
     // (clear() does the same job — implement it below and call it from
     // the destructor body if you prefer one source of truth.)
     ~Chain() {
-        // TODO Floor 4 (Wednesday)
+        clear();
     }
 
     // -----------------------------------------------------------------
@@ -129,7 +129,7 @@ public:
     // TODO Floor 4 (Monday) — return the cached size_.
     // We cache size so size() is O(1). Walking the chain to count would
     // be O(n) on every call; the log is queried by `log <n>` constantly.
-    std::size_t size() const  { return 0; /* TODO Monday */ }
+    std::size_t size() const { return size_;}
     bool        empty() const { return size() == 0; }
 
     // Raw head pointer. Callers walk the chain by hand:
@@ -138,8 +138,8 @@ public:
     // this week.
     //
     // TODO Floor 4 (Monday) — return head_.
-    const Node* head() const { return nullptr; /* TODO Monday */ }
-    Node*       head()       { return nullptr; /* TODO Monday */ }
+    const Node* head() const { return head_; }
+    Node* head() { return head_; }
 
     // -----------------------------------------------------------------
     // Mutation
@@ -152,15 +152,29 @@ public:
     //     Node* n = new Node(value, head_);
     //     head_   = n;
     //     ++size_;
-    void push_front(const T& /*value*/) {
-        // TODO Monday
+    void push_front(const T& value) {
+        // splicing operation
+        Node* n = new Node(value, head_);
+        // the chain's head pointer
+        // points at our new node
+        head_ = n;
+        // bump chain size
+        ++size_;
     }
 
     // Walk and delete every node. Leaves the chain empty.
     //
     // TODO Floor 4 (Wednesday). Same loop as the destructor.
     void clear() {
-        // TODO Wednesday
+        Node* p = head_;
+        while (p != nullptr) {
+            //save the NEXT pointer into a local pointer first
+            Node* n = p->next; // save before delete
+            delete p; // free current node
+            p = n; // advance to the next save
+        }
+        head_ = nullptr; // chain is gone
+        size_ = 0; // so size is 0
     }
 
 private:

@@ -11,16 +11,21 @@ Example entries:
 
 ## Trial I — The Foundations Brief
 
-(your declaration)
+I used AI to help critique my answers slightly. I was on the right track but a slight amount of logic would be off. A good 
+example of a critiquewould be missing how binary search doesn't actually work when we search by name in a list sorted by value. 
+I simply had that binary is better when the list is at the end, assuming it was looking for the same name and it was simply 
+bouncing throught the values.
 
 ## Trial II — The Critique
 
-This trial **requires** AI use. The full prompt + reply + critique are in `trial-2-critique.md`. If you used a different LLM for any other reason on this trial (e.g., to look up syntax), declare it here:
+This trial **requires** AI use. The full prompt + reply + critique are in `trial-2-critique.md`. 
+If you used a different LLM for any other reason on this trial (e.g., to look up syntax), declare it here:
 
-(your declaration)
+No additional AI usage
 
 ## Trial III — The Encounter
 
-(your declaration)
+None
 
-The two functions in your battle code that you wrote *without* AI assistance are named in `encounter-notes.md`. Friday's quiz pulls from those.
+The two functions in your battle code that you wrote *without* AI assistance are named in `encounter-notes.md`. 
+Friday's quiz pulls from those.
