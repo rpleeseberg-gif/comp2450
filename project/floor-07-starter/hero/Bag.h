@@ -68,7 +68,11 @@ public:
 
     void push_back(const T& value) { data_.push_back(value); }
     void clear()                   { data_.clear(); }
-
+    void pop_front() {
+        if (!data_.empty()) {
+            data_.erase(data_.begin());
+        }
+    }
     // ---- iteration -----------------------------------------------------
     //
     // begin()/end() are what lets `for (auto& x : bag)` work AND lets

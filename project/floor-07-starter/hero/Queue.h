@@ -40,7 +40,7 @@
 
 #include <cstddef>
 
-#include "Chain.h"
+#include "Bag.h"
 
 namespace dungeon {
 
@@ -87,11 +87,11 @@ public:
     // while enqueue()/size() are still stubbed. Read this body and
     // Stack::top() side by side — the same delegate-to-chain_ move.
     T& front() {
-        return chain_.head()->data;
+        return chain_[0];
     }
     const T& front() const {
         // same body as the non-const version above
-        return chain_.head()->data;
+        return chain_[0];
     }
 
     // Number of items currently in the queue.
@@ -112,7 +112,7 @@ public:
     }
 
 private:
-    Chain<T> chain_;
+    Bag<T> chain_;
 };
 
 }  // namespace dungeon
