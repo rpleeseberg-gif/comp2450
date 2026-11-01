@@ -54,9 +54,9 @@ class BST {
 public:
     struct Node {
         T     data;
-        Node* left  = nullptr;
-        Node* right = nullptr;
-        explicit Node(const T& v) : data(v) {}
+        Node* left  = nullptr; // pts to smaller val
+        Node* right = nullptr; // pts to larger val
+        explicit Node(const T& v) : data(v) {} // new node has nothing below it
     };
 
     // ----- lifetime --------------------------------------------------
@@ -131,8 +131,12 @@ private:
     //     else if (n->data < value) n->right = insertInto(n->right, value);
     //     return n;
     static Node* insertInto(Node* n, const T& value) {
-        (void)value;
-        return n;   // TODO Monday — stub leaves the tree unchanged
+        if (n == nullptr) return new Node(value); // empty spot, where new val goes
+        // smaller: go left and save what comes back in n->left
+        if (value < n->data) n->left = insertInto(n->left, value);
+        // larger: go right and save what comes back in n->right
+        else if (n->data < value) n->right = insertInto(n->right, value);
+        return n; // either way we return this node to the caller
     }
 
     // Search for `value`. Unlike Floor 8's findFrom, you do NOT ask every
@@ -145,8 +149,14 @@ private:
     //     if (n->data < value) return findFrom(n->right, value);
     //     return n;   // equal => found
     static const Node* findFrom(const Node* n, const T& value) {
-        (void)n; (void)value;
-        return nullptr;   // TODO Monday
+        // ran off the bottom: it's not in the tree
+        if (n == nullptr) return nullptr;
+        // smaller: it has to be on the left
+        if (value < n->data) return findFrom(n->left, value);
+        // larger: it has to be on the right
+        if (n->data < value) return findFrom(n->right, value);
+        // not larger, not smaller, it's equal
+        return n;
     }
 
     // ----- Wednesday -------------------------------------------------
@@ -162,8 +172,14 @@ private:
     //     out.push_back(n->data);
     //     inOrderInto(n->right, out);
     static void inOrderInto(const Node* n, std::vector<T>& out) {
-        (void)n; (void)out;
-        // TODO Wednesday
+        if (n == nullptr) return; // nothing here: so nothing to add
+        // 1. add every val on the left (all smaller)
+        inOrderInto(n->left, out);
+        // 2. then, add THIS node's value
+        out.push_back(n->data);
+        // 3. lestly, add every value on the right (all larger)
+        inOrderInto(n->right, out);
+        // left, myself, right
     }
 
     // Free the whole subtree. This is the Floor 8 Tree destructor with
@@ -176,8 +192,10 @@ private:
     //     destroy(n->right);
     //     delete n;
     static void destroy(Node* n) {
-        (void)n;
-        // TODO Wednesday — until written, the BST leaks its nodes
+        if (n == nullptr) return;
+        destroy(n->left); // delete left side first
+        destroy(n->right); // then delete right side
+        delete n; // delete THIS node last
     }
 
     // Deep-copy the whole subtree. Mirrors destroy(): make this node, then
@@ -190,8 +208,11 @@ private:
     //     copy->right = clone(n->right);
     //     return copy;
     static Node* clone(const Node* n) {
-        (void)n;
-        return nullptr;   // TODO Wednesday — stub copies to an empty tree
+        if (n == nullptr) return nullptr; // nothing here so node empty
+        Node* copy = new Node(n->data); // brand new node with same value
+        copy->left = clone(n->left); // copy left side and hang it under new node
+        copy->right = clone(n->right); // same for the right side
+        return copy; // hand bakc new node to caller so it can be attached 
     }
 
     // ----- Friday ----------------------------------------------------
@@ -220,8 +241,18 @@ private:
     //     n->right = removeFrom(n->right, succ->data, discard);
     //     return n;
     static Node* removeFrom(Node* n, const T& value, bool& removed) {
-        (void)value; (void)removed;
-        return n;   // TODO Friday — stub leaves the tree unchanged
+        if (n == nullptr) return nullptr;
+        if (value < n->data) { n->left  = removeFrom(n->left,  value, removed); return n; }
+        if (n->data < value) { n->right = removeFrom(n->right, value, removed); return n; }
+        removed = true;
+        if (n->left  == nullptr) { Node* r = n->right; delete n; return r; }
+        if (n->right == nullptr) { Node* l = n->left;  delete n; return l; }
+        Node* succ = n->right;
+        while (succ->left != nullptr) succ = succ->left;
+        n->data = succ->data;
+        bool discard = false;
+        n->right = removeFrom(n->right, succ->data, discard);
+        return n;
     }
 };
 
