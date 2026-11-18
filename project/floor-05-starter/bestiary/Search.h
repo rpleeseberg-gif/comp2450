@@ -67,7 +67,7 @@ const T* findByName(const Bag<T>& items, const std::string& name) {
     // return a pointer to the first match or nullptr
     // &*it --> dereference the iterator to a reference, then take its address
     // standard for turning an iterator back into a raw pointer
-    auto it = std::find_if(items.begin(), items.end()), [&name](const T& x) {return x.name == name;});
+    auto it = std::find_if(items.begin(), items.end(), [&name](const T& x) {return x.name == name;});
     return (it != items.end()) ? &*it : nullptr;
     // main.cpp
     // 3 branches
