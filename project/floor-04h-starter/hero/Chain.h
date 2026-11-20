@@ -152,10 +152,21 @@ public:
     //       More code, but no surprise about why it works.
     //
     // Pick one. Defend it in your lab notes.
-    Chain& operator=(const Chain& /*other*/) {
-        // TODO Friday — copy assignment.
+    Chain& operator=(const Chain& other) {
+        Chain tmp(other); // deep copy other
+        swap(tmp_; // trade our "guts' with this fresh copy
         return *this;
+
+            //         Chain& operator=(const Chain & other) {
+            //             if (this == &other) return *this;   // self-assignment guard
+            //             clear();
+            //             for (const Node* p = other.head_; p; p = p->next) {
+            //                 push_back(p->data);
+            //             }
+            //             return *this;
+            //         }
     }
+    
 
     // Member swap — useful for copy-and-swap, useful for nothing else.
     // Pre-built so you can use it on Friday without thinking about it.
@@ -232,7 +243,15 @@ public:
     //      If it IS null, the chain is now empty — set tail_ = nullptr too.
     //   5. --size_.
     void pop_front() {
-        // TODO Friday
+        if (head_ == nullptr) return;
+        Node* old_head = head_;
+        Node* new_head = old_head->next;
+        delete old_head;
+        head_ = new_head;
+        // new head has nothing before it
+        of(new_head != nullptr) new_head->prev = nullptr;
+        else tail_ = nullptr; // chain is empty
+        --size_; // decrement size
     }
 
     // TODO Floor 4½ (Friday) — remove the back node. O(1) BECAUSE of prev.
@@ -248,7 +267,15 @@ public:
     // Question for the lab: why is this O(n) on a singly-linked chain
     // *even if it has a tail_ pointer*?
     void pop_back() {
-        // TODO Friday
+        if (tail_ == nullptr) return;
+        Node* old_tail = tail_;
+        Node* new_tail = old_tail->prev;
+        delete old_tail;
+        head_ = new_tail;
+        // new head has nothing before it
+        of(new_tail != nullptr) new_tail->next = nullptr;
+        else head_ = nullptr; // chain is empty
+        --size_; // decrement size
     }
 
     // Walk and delete every node. Floor 4 version — unchanged loop body,
